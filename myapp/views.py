@@ -4,7 +4,7 @@ from matplotlib.pyplot import cla
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserSerializerNoPass
 from rest_framework.exceptions import AuthenticationFailed
 # Create your views here.
 # JWT
@@ -50,7 +50,10 @@ class LoginView(APIView):
 # Get User
 class UserView(APIView):
     def get(self,request):
-        token = request.COOKIES.get('jwt')
+        # print(request.headers['Authorization'])
+
+        token = request.headers['Authorization']
+        print(token)
         if not token:
             raise AuthenticationFailed("Unauthenticated")
 
@@ -61,7 +64,7 @@ class UserView(APIView):
 
         print(payload['id'])
         user = User.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
+        serializer = UserSerializerNoPass(user)
         return Response(serializer.data)
 
 
