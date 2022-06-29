@@ -50,7 +50,8 @@ class LoginView(APIView):
 # Get User
 class UserView(APIView):
     def get(self,request):
-        # print(request.headers['Authorization'])
+        if request.headers['Authorization'] == 'null':
+            raise AuthenticationFailed('No token')
 
         token = request.headers['Authorization']
         print(token)
